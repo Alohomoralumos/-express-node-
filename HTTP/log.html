@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>log</title>
+</head>
+<body>
+    
+    用户名：<input type="text" placeholder="admin" id="u">
+    密码：<input type="text" placeholder="password" id="p">
+    <input type="button" value="登录" id="login">
+    
+    <script>
+        
+        async function postData(url = '', data = {}) {
+            // Default options are marked with *
+            const response = await fetch(url, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                redirect: 'follow', // manual, *follow, error
+                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-ur
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            });
+            return response.json(); // parses JSON response into native JavaScript objects
+        }
+
+        login.onclick=()=>{
+            
+            let user = u.value;
+            let word = p.value;
+            
+            console.log(user);
+            let formData = new FormData();
+            formData.append('username',user);
+            formData.append('password',word);
+            for(let [name, value] of formData)
+            {
+                console.log(`${name} = ${value}`);
+            }
+
+            //本地存储
+            localStorage.user = JSON.stringify({username:user + '',password:word});
+            
+            //最终不知道为什么还是没有用成formData
+            postData('http://127.0.0.1:80/user/login', {username:user+'',password:word })
+            .then(data => {
+                console.log(data);
+                console.log(data.url);
+                window.location.href = data.url;
+            });
+        }
+    </script>
+</body>
+</html>
